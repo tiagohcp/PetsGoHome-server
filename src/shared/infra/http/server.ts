@@ -4,7 +4,7 @@ import express from 'express';
 import AppError from '@shared/errors/AppError';
 import routes from './routes';
 
-import '@shared/infra/http/typeorm';
+import '@shared/infra/typeorm';
 
 const app = express();
 app.use(express.json());
