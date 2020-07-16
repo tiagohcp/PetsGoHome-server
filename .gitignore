@@ -2,5 +2,7 @@
 node_modules/
 tmp/*
 !tmp/.gitkeep
-src/modules/ngos/dtos
+src/modules/ngos/services
 src/modules/ngos/repositories
+src/modules/ngos/providers
+

@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 
+import Pet from '@modules/pets/infra/typeorm/entities/Pet';
 import Ngo from './Ngo';
 
 @Entity('headquarters')
@@ -18,9 +20,12 @@ class Headquarter {
   @Column()
   ngo_id: string;
 
-  @ManyToOne(() => Ngo)
+  @ManyToOne(() => Ngo, ngo => ngo.headquarters)
   @JoinColumn({ name: 'ngo_id' })
   ngo: Ngo;
+
+  @OneToMany(() => Pet, pet => pet.headquarter)
+  pets: Pet[];
 
   @Column()
   name: string;

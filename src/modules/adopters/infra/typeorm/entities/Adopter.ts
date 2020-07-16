@@ -7,15 +7,15 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import Headquarter from './Headquarter';
+import Visit from './Visit';
 
-@Entity('ngos')
-class Ngo {
+@Entity('adopters')
+class Adopter {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToMany(() => Headquarter, headquarter => headquarter.ngo)
-  headquarters: Headquarter[];
+  @OneToMany(() => Visit, visit => visit.adopter)
+  visits: Visit[];
 
   @Column()
   avatar: string;
@@ -36,4 +36,4 @@ class Ngo {
   updated_at: Date;
 }
 
-export default Ngo;
+export default Adopter;
