@@ -9,8 +9,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import Headquarter from '@modules/ngos/infra/typeorm/entities/Headquarter';
-import Visit from '@modules/adopters/infra/typeorm/entities/Visit';
+import Headquarter from '@modules/headquarters/infra/typeorm/entities/Headquarter';
+import Visit from '@modules/visits/infra/typeorm/entities/Visit';
 import PetsCompatibilities from './PetsCompatibilities';
 
 @Entity('pets')

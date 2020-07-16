@@ -5,11 +5,8 @@ import { injectable, inject } from 'tsyringe';
 import AppError from '@shared/errors/AppError';
 import IHashProvider from '@shared/container/providers/HashProvider/models/IHashProviser';
 
-import INgosRepository from '@modules/ngos/repositories/INgosRepository';
-import Ngo from '@modules/ngos/infra/typeorm/entities/Ngo';
-
-import IAdoptersRepository from '@modules/adopters/repositories/IAdoptersRepository';
-import Adopter from '@modules/adopters/infra/typeorm/entities/Adopter';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import User from '@modules/users/infra/typeorm/entities/User';
 
 interface IRequest {
   email: string;

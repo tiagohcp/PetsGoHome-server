@@ -24,7 +24,7 @@ export default class CreateVisits1594858450488 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'adopter_id',
+            name: 'user_id',
             type: 'uuid',
             isNullable: true,
           },
@@ -56,10 +56,10 @@ export default class CreateVisits1594858450488 implements MigrationInterface {
         onUpdate: 'CASCADE',
       }),
       new TableForeignKey({
-        name: 'AdopterVisits',
-        columnNames: ['adopter_id'],
+        name: 'UserVisits',
+        columnNames: ['user_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'adopters',
+        referencedTableName: 'users',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       }),
@@ -68,7 +68,7 @@ export default class CreateVisits1594858450488 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey('visits', 'PetVisits');
-    await queryRunner.dropForeignKey('visits', 'AdopterVisits');
+    await queryRunner.dropForeignKey('visits', 'UserVisits');
 
     await queryRunner.dropTable('visits');
   }

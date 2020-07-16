@@ -20,7 +20,7 @@ export default class CreateHeadquarters1594836529270
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'ngo_id',
+            name: 'user_id',
             type: 'uuid',
             isNullable: true,
           },
@@ -73,10 +73,10 @@ export default class CreateHeadquarters1594836529270
     await queryRunner.createForeignKey(
       'headquarters',
       new TableForeignKey({
-        name: 'NgoHeadquarters',
-        columnNames: ['ngo_id'],
+        name: 'UserHeadquarters',
+        columnNames: ['user_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'ngos',
+        referencedTableName: 'users',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       }),
@@ -84,7 +84,7 @@ export default class CreateHeadquarters1594836529270
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('headquarters', 'NgoHeadquarters');
+    await queryRunner.dropForeignKey('headquarters', 'UserHeadquarters');
 
     await queryRunner.dropTable('headquarters');
   }
