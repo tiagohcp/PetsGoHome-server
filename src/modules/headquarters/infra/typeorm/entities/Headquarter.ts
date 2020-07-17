@@ -31,6 +31,9 @@ class Headquarter {
   name: string;
 
   @Column()
+  identification: string;
+
+  @Column()
   zipcode: string;
 
   @Column()

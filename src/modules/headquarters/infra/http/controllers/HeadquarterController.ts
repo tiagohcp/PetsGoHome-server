@@ -8,6 +8,7 @@ export default class HeadquarterController {
     const {
       user_id,
       name,
+      identification,
       zipcode,
       address,
       number,
@@ -22,6 +23,7 @@ export default class HeadquarterController {
     const appointment = await createHeadquarter.execute({
       user_id,
       name,
+      identification,
       zipcode,
       address,
       number,

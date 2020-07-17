@@ -1,6 +1,7 @@
 export default interface ICreateHeadquarterDTO {
   user_id: string;
   name: string;
+  identification: string;
   zipcode: string;
   address: string;
   number: string;

@@ -1,39 +1,39 @@
-import { getRepository, Repository } from 'typeorm';
+import { uuid } from 'uuidv4';
 
 import IHeadquartersRepository from '@modules/headquarters/repositories/IHeadquartersRepository';
 import ICreateHeadquarterDTO from '@modules/headquarters/dtos/ICreateHeadquarterDTO';
 
-import Headquarter from '../entities/Headquarter';
+import Headquarter from '@modules/headquarters/infra/typeorm/entities/Headquarter';
 
 class HeadquartersRepository implements IHeadquartersRepository {
-  private ormRepository: Repository<Headquarter>;
-
-  constructor() {
-    this.ormRepository = getRepository(Headquarter);
-  }
+  private headquarters: Headquarter[] = [];
 
   public async findById(id: string): Promise<Headquarter | undefined> {
-    const headquarter = await this.ormRepository.findOne(id);
+    const findHeadquarter = this.headquarters.find(
+      headquarter => headquarter.id === id,
+    );
 
-    return headquarter;
+    return findHeadquarter;
   }
 
   public async findByIdentification(
     identification: string,
   ): Promise<Headquarter | undefined> {
-    const headquarter = await this.ormRepository.findOne({
-      where: { identification },
-    });
+    const findHeadquarter = this.headquarters.find(
+      headquarter => headquarter.identification === identification,
+    );
 
-    return headquarter;
+    return findHeadquarter;
   }
 
   public async create(
     headquarterData: ICreateHeadquarterDTO,
   ): Promise<Headquarter> {
-    const headquarter = this.ormRepository.create(headquarterData);
+    const headquarter = new Headquarter();
 
-    await this.ormRepository.save(headquarter);
+    Object.assign(headquarter, { id: uuid() }, headquarterData);
+
+    this.headquarters.push(headquarter);
 
     return headquarter;
   }

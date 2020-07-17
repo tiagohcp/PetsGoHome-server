@@ -34,7 +34,7 @@ class User {
   password: string;
 
   @Column()
-  type: 'adopter' | 'ngo';
+  type: 'ngo' | 'adopter';
 
   @CreateDateColumn()
   created_at: Date;

@@ -29,6 +29,11 @@ export default class CreateHeadquarters1594836529270
             type: 'varchar',
           },
           {
+            name: 'identification',
+            type: 'varchar',
+            isUnique: true,
+          },
+          {
             name: 'zipcode',
             type: 'varchar',
           },
