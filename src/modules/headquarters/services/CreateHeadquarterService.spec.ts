@@ -24,6 +24,9 @@ describe('CreateHeadquarter', () => {
       city: 'São José dos Campos',
       state: 'SP',
       whatsapp: '12981005727',
+      about: 'Ong para cuidar de gatões',
+      latitude: -23.1849779,
+      longitude: -45.8755274,
     });
 
     expect(user).toHaveProperty('id');
@@ -49,6 +52,9 @@ describe('CreateHeadquarter', () => {
         city: 'São José dos Campos',
         state: 'SP',
         whatsapp: '12981005727',
+        about: 'Ong para cuidar de gatões',
+        latitude: -23.1849779,
+        longitude: -45.8755274,
       }),
     ).rejects.toBeInstanceOf(AppError);
   });
@@ -72,6 +78,9 @@ describe('CreateHeadquarter', () => {
       city: 'São José dos Campos',
       state: 'SP',
       whatsapp: '12981005727',
+      about: 'Ong para cuidar de gatões',
+      latitude: -23.1849779,
+      longitude: -45.8755274,
     });
 
     expect(
@@ -86,6 +95,9 @@ describe('CreateHeadquarter', () => {
         city: 'São José dos Campos',
         state: 'SP',
         whatsapp: '12981005727',
+        about: 'Ong para cuidar de gatões',
+        latitude: -23.1849779,
+        longitude: -45.8755274,
       }),
     ).rejects.toBeInstanceOf(AppError);
   });

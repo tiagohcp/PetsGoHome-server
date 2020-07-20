@@ -56,6 +56,15 @@ class Headquarter {
   @Column()
   whatsapp: string;
 
+  @Column()
+  about: string;
+
+  @Column('decimal', { precision: 9, scale: 2 })
+  latitude: number;
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  longitude: number;
+
   @CreateDateColumn()
   created_at: Date;
 

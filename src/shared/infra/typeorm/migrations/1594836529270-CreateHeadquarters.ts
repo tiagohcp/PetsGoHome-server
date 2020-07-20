@@ -62,6 +62,18 @@ export default class CreateHeadquarters1594836529270
             type: 'varchar',
           },
           {
+            name: 'about',
+            type: 'text',
+          },
+          {
+            name: 'latitude',
+            type: 'numeric',
+          },
+          {
+            name: 'longitude',
+            type: 'numeric',
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'now()',

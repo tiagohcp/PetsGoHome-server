@@ -17,6 +17,9 @@ interface IRequest {
   city: string;
   state: string;
   whatsapp: string;
+  about: string;
+  latitude: number;
+  longitude: number;
 }
 
 @injectable()
@@ -40,6 +43,9 @@ class CreateHeadquarterService {
     city,
     state,
     whatsapp,
+    about,
+    latitude,
+    longitude,
   }: IRequest): Promise<Headquarter> {
     const isValid = await this.identificatorValidator.validateIdentidicator(
       identification,
@@ -68,6 +74,9 @@ class CreateHeadquarterService {
       city,
       state,
       whatsapp,
+      about,
+      latitude,
+      longitude,
     });
 
     return headquarter;

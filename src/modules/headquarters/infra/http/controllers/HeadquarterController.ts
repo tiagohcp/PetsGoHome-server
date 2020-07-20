@@ -16,6 +16,9 @@ export default class HeadquarterController {
       city,
       state,
       whatsapp,
+      about,
+      latitude,
+      longitude,
     } = request.body;
 
     const createHeadquarter = container.resolve(CreateHeadquarterService);
@@ -31,6 +34,9 @@ export default class HeadquarterController {
       city,
       state,
       whatsapp,
+      about,
+      latitude,
+      longitude,
     });
 
     return response.json(appointment);

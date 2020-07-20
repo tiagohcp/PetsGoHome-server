@@ -9,4 +9,7 @@ export default interface ICreateHeadquarterDTO {
   city: string;
   state: string;
   whatsapp: string;
+  about: string;
+  latitude: number;
+  longitude: number;
 }
