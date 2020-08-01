@@ -16,11 +16,11 @@ export default class TypeController {
       throw new AppError('Tipo de usuário invalido!');
     }
 
-    const user = await updateType.execute({
+    const { user, token } = await updateType.execute({
       user_id,
       user_type,
     });
 
-    return response.json(classToClass(user));
+    return response.json({ user: classToClass(user), token });
   }
 }
