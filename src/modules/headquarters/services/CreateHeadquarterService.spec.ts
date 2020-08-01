@@ -4,17 +4,23 @@ import FakeIdentificatorValidator from '@modules/headquarters/validators/Identif
 import FakeHeadquartersRepository from '../repositories/fakes/FakeHeadquartersRepository';
 import CreateHeadquarterService from './CreateHeadquarterService';
 
+let fakeHeadquartersRepository: FakeHeadquartersRepository;
+let fakeIdentificatorValidator: FakeIdentificatorValidator;
+let createHeadquarter: CreateHeadquarterService;
+
 describe('CreateHeadquarter', () => {
-  it('should be able to create a new Headquarter', async () => {
-    const fakeHeadquartersRepository = new FakeHeadquartersRepository();
-    const fakeIdentificatorValidator = new FakeIdentificatorValidator();
-    const createHeadquarter = new CreateHeadquarterService(
+  beforeEach(() => {
+    fakeHeadquartersRepository = new FakeHeadquartersRepository();
+    fakeIdentificatorValidator = new FakeIdentificatorValidator();
+    createHeadquarter = new CreateHeadquarterService(
       fakeHeadquartersRepository,
       fakeIdentificatorValidator,
     );
+  });
 
-    const user = await createHeadquarter.execute({
-      user_id: 'bdd9ea3a-d6fd-49b6-a111-e40c3e32ac61',
+  it('should be able to create a new Headquarter', async () => {
+    const headquarter = await createHeadquarter.execute({
+      user_id: 'user-uuid',
       name: 'Casa',
       identification: '82627353000180',
       zipcode: '12215030',
@@ -29,20 +35,13 @@ describe('CreateHeadquarter', () => {
       longitude: -45.8755274,
     });
 
-    expect(user).toHaveProperty('id');
+    expect(headquarter).toHaveProperty('id');
   });
 
   it('should not be able to create a new Headquarter with an invalid identificator', async () => {
-    const fakeHeadquartersRepository = new FakeHeadquartersRepository();
-    const fakeIdentificatorValidator = new FakeIdentificatorValidator();
-    const createHeadquarter = new CreateHeadquarterService(
-      fakeHeadquartersRepository,
-      fakeIdentificatorValidator,
-    );
-
-    expect(
+    await expect(
       createHeadquarter.execute({
-        user_id: 'bdd9ea3a-d6fd-49b6-a111-e40c3e32ac61',
+        user_id: 'user-uuid',
         name: 'Casa',
         identification: 'afafaff',
         zipcode: '12215030',
@@ -60,15 +59,8 @@ describe('CreateHeadquarter', () => {
   });
 
   it('should not be able to create a new Headquarter with same identificator from another', async () => {
-    const fakeHeadquartersRepository = new FakeHeadquartersRepository();
-    const fakeIdentificatorValidator = new FakeIdentificatorValidator();
-    const createHeadquarter = new CreateHeadquarterService(
-      fakeHeadquartersRepository,
-      fakeIdentificatorValidator,
-    );
-
     await createHeadquarter.execute({
-      user_id: 'bdd9ea3a-d6fd-49b6-a111-e40c3e32ac61',
+      user_id: 'user-uuid',
       name: 'Casa',
       identification: '82627353000180',
       zipcode: '12215030',
@@ -83,9 +75,9 @@ describe('CreateHeadquarter', () => {
       longitude: -45.8755274,
     });
 
-    expect(
+    await expect(
       createHeadquarter.execute({
-        user_id: 'bdd9ea3a-d6fd-49b6-a111-e40c3e32ac61',
+        user_id: 'user-uuid',
         name: 'Casa',
         identification: '82627353000180',
         zipcode: '12215030',

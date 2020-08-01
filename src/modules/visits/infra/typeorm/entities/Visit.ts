@@ -31,7 +31,7 @@ class Visit {
   user: User;
 
   @Column('time with time zone')
-  expires_at: Date;
+  date: Date;
 
   @CreateDateColumn()
   created_at: Date;

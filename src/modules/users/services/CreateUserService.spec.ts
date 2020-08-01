@@ -4,15 +4,17 @@ import FakeHashRepository from '@modules/users/providers/HashProvider/fakes/Fake
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import CreateUserService from './CreateUserService';
 
-describe('CreateUser', () => {
-  it('should be able to create a new User', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashRepository = new FakeHashRepository();
-    const createUser = new CreateUserService(
-      fakeUsersRepository,
-      fakeHashRepository,
-    );
+let fakeUsersRepository: FakeUsersRepository;
+let fakeHashRepository: FakeHashRepository;
+let createUser: CreateUserService;
 
+describe('CreateUser', () => {
+  beforeEach(() => {
+    fakeUsersRepository = new FakeUsersRepository();
+    fakeHashRepository = new FakeHashRepository();
+    createUser = new CreateUserService(fakeUsersRepository, fakeHashRepository);
+  });
+  it('should be able to create a new User', async () => {
     const user = await createUser.execute({
       name: 'John Doe Pet Helper',
       email: 'johndoepethelper@example.com',
@@ -24,13 +26,6 @@ describe('CreateUser', () => {
   });
 
   it('should not be able to create a new User with same email from another', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashRepository = new FakeHashRepository();
-    const createUser = new CreateUserService(
-      fakeUsersRepository,
-      fakeHashRepository,
-    );
-
     await createUser.execute({
       name: 'John Doe Pet Helper',
       email: 'johndoepethelper@example.com',
@@ -38,7 +33,7 @@ describe('CreateUser', () => {
       type: 'ngo',
     });
 
-    expect(
+    await expect(
       createUser.execute({
         name: 'John Doe Pet Helper',
         email: 'johndoepethelper@example.com',

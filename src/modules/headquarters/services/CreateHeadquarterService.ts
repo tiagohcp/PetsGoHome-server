@@ -32,23 +32,9 @@ class CreateHeadquarterService {
     private identificatorValidator: IIdentificatorValidator,
   ) {}
 
-  public async execute({
-    user_id,
-    name,
-    identification,
-    zipcode,
-    address,
-    number,
-    neighborhood,
-    city,
-    state,
-    whatsapp,
-    about,
-    latitude,
-    longitude,
-  }: IRequest): Promise<Headquarter> {
+  public async execute(headquarterData: IRequest): Promise<Headquarter> {
     const isValid = await this.identificatorValidator.validateIdentidicator(
-      identification,
+      headquarterData.identification,
     );
 
     if (!isValid) {
@@ -56,28 +42,16 @@ class CreateHeadquarterService {
     }
 
     const checkHeadquarterExists = await this.headquartersRepository.findByIdentification(
-      identification,
+      headquarterData.identification,
     );
 
     if (checkHeadquarterExists) {
       throw new AppError('Identificator already cadastred.');
     }
 
-    const headquarter = await this.headquartersRepository.create({
-      user_id,
-      name,
-      identification,
-      zipcode,
-      address,
-      number,
-      neighborhood,
-      city,
-      state,
-      whatsapp,
-      about,
-      latitude,
-      longitude,
-    });
+    const headquarter = await this.headquartersRepository.create(
+      headquarterData,
+    );
 
     return headquarter;
   }

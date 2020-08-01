@@ -3,6 +3,7 @@ import { getRepository, Repository } from 'typeorm';
 import IHeadquartersRepository from '@modules/headquarters/repositories/IHeadquartersRepository';
 import ICreateHeadquarterDTO from '@modules/headquarters/dtos/ICreateHeadquarterDTO';
 
+import IFindAllHeadquartersDTO from '@modules/headquarters/dtos/IFindAllHeadquartersDTO';
 import Headquarter from '../entities/Headquarter';
 
 class HeadquartersRepository implements IHeadquartersRepository {
@@ -28,6 +29,26 @@ class HeadquartersRepository implements IHeadquartersRepository {
     return headquarter;
   }
 
+  public async findAllHeadquarters({
+    user_id,
+  }: IFindAllHeadquartersDTO): Promise<Headquarter[]> {
+    let headquarters: Headquarter[];
+
+    if (user_id) {
+      headquarters = await this.ormRepository.find({
+        where: {
+          user_id,
+        },
+        order: {
+          name: 'ASC',
+        },
+      });
+    } else {
+      headquarters = await this.ormRepository.find();
+    }
+    return headquarters;
+  }
+
   public async create(
     headquarterData: ICreateHeadquarterDTO,
   ): Promise<Headquarter> {
@@ -36,6 +57,10 @@ class HeadquartersRepository implements IHeadquartersRepository {
     await this.ormRepository.save(headquarter);
 
     return headquarter;
+  }
+
+  public async save(headquarter: Headquarter): Promise<Headquarter> {
+    return this.ormRepository.save(headquarter);
   }
 }
 
