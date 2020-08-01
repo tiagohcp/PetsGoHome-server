@@ -8,4 +8,4 @@ ormconfig.json
 tmp/*
 !tmp/.gitkeep
 
-README.md
+src/README.md
