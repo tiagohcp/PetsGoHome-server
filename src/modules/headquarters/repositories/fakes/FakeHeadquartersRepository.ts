@@ -5,7 +5,7 @@ import ICreateHeadquarterDTO from '@modules/headquarters/dtos/ICreateHeadquarter
 import Headquarter from '@modules/headquarters/infra/typeorm/entities/Headquarter';
 import IFindAllHeadquartersDTO from '@modules/headquarters/dtos/IFindAllHeadquartersDTO';
 
-class HeadquartersRepository implements IHeadquartersRepository {
+class FakeHeadquartersRepository implements IHeadquartersRepository {
   private headquarters: Headquarter[] = [];
 
   public async findById(id: string): Promise<Headquarter | undefined> {
@@ -63,4 +63,4 @@ class HeadquartersRepository implements IHeadquartersRepository {
   }
 }
 
-export default HeadquartersRepository;
+export default FakeHeadquartersRepository;

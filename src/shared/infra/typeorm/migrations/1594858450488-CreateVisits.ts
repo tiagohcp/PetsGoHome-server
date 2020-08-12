@@ -43,33 +43,29 @@ export default class CreateVisits1594858450488 implements MigrationInterface {
             default: 'now()',
           },
         ],
+        foreignKeys: [
+          {
+            name: 'PetVisits',
+            columnNames: ['pet_id'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'pets',
+            onUpdate: 'CASCADE',
+            onDelete: 'SET NULL',
+          },
+          {
+            name: 'UserVisits',
+            columnNames: ['user_id'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'users',
+            onUpdate: 'CASCADE',
+            onDelete: 'SET NULL',
+          },
+        ],
       }),
     );
-
-    await queryRunner.createForeignKeys('visits', [
-      new TableForeignKey({
-        name: 'PetVisits',
-        columnNames: ['pet_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'pets',
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE',
-      }),
-      new TableForeignKey({
-        name: 'UserVisits',
-        columnNames: ['user_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'users',
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE',
-      }),
-    ]);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('visits', 'PetVisits');
-    await queryRunner.dropForeignKey('visits', 'UserVisits');
-
     await queryRunner.dropTable('visits');
   }
 }

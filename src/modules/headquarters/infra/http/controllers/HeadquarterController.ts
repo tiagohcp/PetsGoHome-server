@@ -44,11 +44,11 @@ export default class HeadquarterController {
   }
 
   public async index(request: Request, response: Response): Promise<Response> {
-    const { id } = request.user;
-
     const listAllHeadquarters = container.resolve(ListAllHeadquartersService);
 
-    const headquarters = await listAllHeadquarters.execute({ user_id: id });
+    const headquarters = await listAllHeadquarters.execute({
+      user_id: '',
+    });
 
     return response.json(headquarters);
   }

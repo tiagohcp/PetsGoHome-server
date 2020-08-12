@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Column,
 } from 'typeorm';
 
 import PetsCompatibilities from './PetsCompatibilities';
@@ -13,11 +14,14 @@ class Compatibility {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
+  name: string;
+
   @OneToMany(
     () => PetsCompatibilities,
     petsCompatibilities => petsCompatibilities.compatibility,
   )
-  petsCompatibilities: PetsCompatibilities[];
+  pet_compatibilities: PetsCompatibilities[];
 
   @CreateDateColumn()
   created_at: Date;

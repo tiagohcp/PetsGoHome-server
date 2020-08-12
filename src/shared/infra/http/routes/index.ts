@@ -5,6 +5,7 @@ import sessionsRouter from '@modules/users/infra/http/routes/sessions.routes';
 import typeRouter from '@modules/users/infra/http/routes/type.routes';
 import passwordRouter from '@modules/users/infra/http/routes/password.routes';
 import headquartersRouter from '@modules/headquarters/infra/http/routes/headquarters.routes';
+import petsRouter from '@modules/pets/infra/http/routes/pets.routes';
 
 const routes = Router();
 
@@ -14,5 +15,6 @@ routes.use('/sessions', sessionsRouter);
 routes.use('/type', typeRouter);
 routes.use('/password', passwordRouter);
 routes.use('/headquarters', headquartersRouter);
+routes.use('/pets', petsRouter);
 
 export default routes;

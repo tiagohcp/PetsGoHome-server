@@ -11,17 +11,14 @@ import {
 
 import Headquarter from '@modules/headquarters/infra/typeorm/entities/Headquarter';
 import Visit from '@modules/visits/infra/typeorm/entities/Visit';
-import PetsCompatibilities from './PetsCompatibilities';
+import PetsCompatibilities from '@modules/pets/infra/typeorm/entities/PetsCompatibilities';
 
 @Entity('pets')
 class Pet {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  hq_id: string;
-
-  @ManyToOne(() => Headquarter)
+  @ManyToOne(() => Headquarter, { eager: true })
   @JoinColumn({ name: 'hq_id' })
   headquarter: Headquarter;
 
@@ -30,9 +27,13 @@ class Pet {
 
   @OneToMany(
     () => PetsCompatibilities,
-    petsCompatibility => petsCompatibility.pet,
+    petsCompatibilities => petsCompatibilities.pet,
+    {
+      eager: true,
+      cascade: true,
+    },
   )
-  petsCompatibilities: PetsCompatibilities[];
+  pet_compatibilities: PetsCompatibilities[];
 
   @Column()
   avatar: string;

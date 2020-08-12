@@ -14,7 +14,12 @@ class HeadquartersRepository implements IHeadquartersRepository {
   }
 
   public async findById(id: string): Promise<Headquarter | undefined> {
-    const headquarter = await this.ormRepository.findOne(id);
+    const headquarter = await this.ormRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['pets'],
+    });
 
     return headquarter;
   }
@@ -34,7 +39,7 @@ class HeadquartersRepository implements IHeadquartersRepository {
   }: IFindAllHeadquartersDTO): Promise<Headquarter[]> {
     let headquarters: Headquarter[];
 
-    if (user_id) {
+    if (user_id !== '') {
       headquarters = await this.ormRepository.find({
         where: {
           user_id,
