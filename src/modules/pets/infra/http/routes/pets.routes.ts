@@ -11,8 +11,8 @@ petRouter.use(ensureAuthenticated);
 petRouter.use(ensureAccess);
 
 petRouter.post('/', petController.create);
-// petRouter.get('/', petController.index);
-// petRouter.get('/owned', petInformationController.index);
-petRouter.get('/:headquarter_id', petController.index);
+petRouter.put('/:pet_id', petController.update);
+// petRouter.delete('/:pet_id', petController.delete);
+petRouter.get('/:pet_id', petController.show);
 
 export default petRouter;

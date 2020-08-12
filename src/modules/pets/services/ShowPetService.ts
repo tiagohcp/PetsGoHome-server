@@ -1,5 +1,6 @@
 import { injectable, inject } from 'tsyringe';
 
+import AppError from '@shared/errors/AppError';
 import IPetsRepository from '../repositories/IPetsRepository';
 import Pet from '../infra/typeorm/entities/Pet';
 
@@ -8,20 +9,20 @@ interface IRequest {
 }
 
 @injectable()
-class ListAllPetsService {
+class ShowPetsService {
   constructor(
     @inject('PetsRepository')
     private petsRepository: IPetsRepository,
   ) {}
 
-  public async execute({ hq_id }: IRequest): Promise<Pet[]> {
-    console.log('***ListAllPetsService.execute.hq_id ', hq_id);
-    const pets = await this.petsRepository.findAllPets({
-      hq_id,
-    });
+  public async execute(id: string): Promise<Pet> {
+    const pet = await this.petsRepository.findById(id);
+    if (pet) {
+      return pet;
+    }
 
-    return pets;
+    throw new AppError('Id informado não cadastrado.');
   }
 }
 
-export default ListAllPetsService;
+export default ShowPetsService;

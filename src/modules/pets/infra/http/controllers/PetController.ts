@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import CreatePetService from '@modules/pets/services/CreatePetService';
-import ListAllPetsService from '@modules/pets/services/ListAllPetsService';
+import ShowPetService from '@modules/pets/services/ShowPetService';
+import UpdatePetService from '@modules/pets/services/UpdatePetService';
 
 export default class PetController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -19,15 +20,32 @@ export default class PetController {
     return response.json(newPet);
   }
 
-  public async index(request: Request, response: Response): Promise<Response> {
-    const { headquarter_id } = request.params;
+  public async show(request: Request, response: Response): Promise<Response> {
+    const { pet_id } = request.params;
 
-    console.log('***PetController.index.headquarter_id ', headquarter_id);
+    const showPet = container.resolve(ShowPetService);
 
-    const listAllPets = container.resolve(ListAllPetsService);
+    const pet = await showPet.execute(pet_id);
 
-    const pets = await listAllPets.execute({ hq_id: headquarter_id });
+    return response.json(pet);
+  }
 
-    return response.json(pets);
+  public async update(request: Request, response: Response): Promise<Response> {
+    const { pet_id } = request.params;
+
+    const { hq_id, pet, compatibilities } = request.body;
+
+    const updatePet = container.resolve(UpdatePetService);
+
+    const updatedPet = await updatePet.execute(
+      {
+        hq_id,
+        pet,
+        compatibilities,
+      },
+      pet_id,
+    );
+
+    return response.json(updatedPet);
   }
 }

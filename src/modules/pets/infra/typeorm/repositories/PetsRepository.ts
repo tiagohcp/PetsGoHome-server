@@ -4,7 +4,6 @@ import IPetsRepository from '@modules/pets/repositories/IPetsRepository';
 import ICreatePetDTO from '@modules/pets/dtos/ICreatePetDTO';
 
 import Pet from '@modules/pets/infra/typeorm/entities/Pet';
-import IFindAllPetsDTO from '@modules/pets/dtos/IFindAllPetsDTO';
 
 class PetsRepository implements IPetsRepository {
   private ormRepository: Repository<Pet>;
@@ -24,24 +23,6 @@ class PetsRepository implements IPetsRepository {
       where: { type },
     });
 
-    return pets;
-  }
-
-  public async findAllPets(hq_id: IFindAllPetsDTO): Promise<Pet[]> {
-    let pets: Pet[];
-
-    if (hq_id !== '') {
-      pets = await this.ormRepository.find({
-        where: {
-          hq_id,
-        },
-        order: {
-          name: 'ASC',
-        },
-      });
-    } else {
-      pets = await this.ormRepository.find();
-    }
     return pets;
   }
 
