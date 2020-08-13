@@ -41,7 +41,11 @@ class UpdatePetService {
     private headquartersRepository: IHeadquartersRepository,
   ) {}
 
-  public async execute(petData: IRequest, id: string): Promise<Pet> {
+  public async execute(
+    petData: IRequest,
+    id: string,
+    user_id: string,
+  ): Promise<Pet> {
     const pet = await this.petsRepository.findById(id);
 
     if (!pet) {
@@ -54,6 +58,10 @@ class UpdatePetService {
 
     if (headquarter === undefined) {
       throw new AppError('Headquarter is not cadastred.');
+    }
+
+    if (headquarter.user_id !== user_id) {
+      throw new AppError('Only can update a your own pet.');
     }
 
     delete headquarter.pets;

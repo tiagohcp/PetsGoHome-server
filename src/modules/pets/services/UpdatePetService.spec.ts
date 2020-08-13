@@ -1,93 +1,373 @@
-import { injectable, inject } from 'tsyringe';
-
 import AppError from '@shared/errors/AppError';
 
-import IHeadquartersRepository from '@modules/headquarters/repositories/IHeadquartersRepository';
-import IPetsRepository from '../repositories/IPetsRepository';
-import ICompatibilitiesRepository from '../repositories/ICompatibilitiesRepository';
-import ICompatibility from '../dtos/ICreateCompatibilityDTO';
-import Pet from '../infra/typeorm/entities/Pet';
-import Compatibility from '../infra/typeorm/entities/Compatibility';
+import FakeHeadquartersRepository from '@modules/headquarters/repositories/fakes/FakeHeadquartersRepository';
+import FakeIdentificatorValidator from '@modules/headquarters/validators/IdentificatorValidator/fakes/FakeIdentificatorValidator';
+import CreateHeadquarterService from '@modules/headquarters/services/CreateHeadquarterService';
+import FakePetsRepository from '../repositories/fakes/FakePetsRepository';
+import FakeCompatibilitiesRepository from '../repositories/fakes/FakeCompatibilitiesRepository';
 
-interface IRequest {
-  hq_id: string;
-  pet: {
-    avatar: string;
-    name: string;
-    type: 'dog' | 'cat';
-    breed: string;
-    size: 'PP' | 'P' | 'M' | 'G' | 'GG';
-    age: number;
-    gender: 'male' | 'female';
-    description: string;
-    energy: 'low' | 'average' | 'high';
-    active: boolean;
-    expires_at: Date;
-  };
-  compatibilities: ICompatibility[];
-}
+import CreatePetService from './CreatePetService';
+import UpdatePetService from './UpdatePetService';
 
-@injectable()
-class CreatePetService {
-  constructor(
-    @inject('PetsRepository')
-    private petsRepository: IPetsRepository,
+let fakePetsRepository: FakePetsRepository;
+let fakeHeadquartersRepository: FakeHeadquartersRepository;
+let fakeCompatibilitiesRepository: FakeCompatibilitiesRepository;
+let createPet: CreatePetService;
+let updatePet: UpdatePetService;
 
-    @inject('CompatibilitiesRepository')
-    private compatibilitiesRepository: ICompatibilitiesRepository,
+let fakeIdentificatorValidator: FakeIdentificatorValidator;
+let createHeadquarter: CreateHeadquarterService;
 
-    @inject('HeadquartersRepository')
-    private headquartersRepository: IHeadquartersRepository,
-  ) {}
-
-  public async execute(petData: IRequest): Promise<Pet> {
-    const headquarter = await this.headquartersRepository.findById(
-      petData.hq_id,
+describe('UpdatePet', () => {
+  beforeEach(() => {
+    fakePetsRepository = new FakePetsRepository();
+    fakeCompatibilitiesRepository = new FakeCompatibilitiesRepository();
+    fakeHeadquartersRepository = new FakeHeadquartersRepository();
+    createPet = new CreatePetService(
+      fakePetsRepository,
+      fakeCompatibilitiesRepository,
+      fakeHeadquartersRepository,
     );
 
-    if (headquarter === undefined) {
-      throw new AppError('Headquarter is not cadastred.');
-    }
-
-    let existentCompatibilities = await this.compatibilitiesRepository.findByName(
-      petData.compatibilities,
+    updatePet = new UpdatePetService(
+      fakePetsRepository,
+      fakeCompatibilitiesRepository,
+      fakeHeadquartersRepository,
     );
 
-    if (existentCompatibilities === undefined) {
-      existentCompatibilities = [];
-    }
+    fakeIdentificatorValidator = new FakeIdentificatorValidator();
 
-    const existentCompatibilitiesNames = existentCompatibilities.map(
-      (compatibility: Compatibility) => compatibility.name,
+    createHeadquarter = new CreateHeadquarterService(
+      fakeHeadquartersRepository,
+      fakeIdentificatorValidator,
     );
+  });
 
-    const addCompatibilityNames = petData.compatibilities
-      .filter(
-        compatibility =>
-          !existentCompatibilitiesNames.includes(String(compatibility.name)),
-      )
-      .filter((value, index, self) => self.indexOf(value) === index);
-
-    const newCompatibilities = await this.compatibilitiesRepository.create(
-      addCompatibilityNames,
-    );
-
-    const finalCompatibilities = [
-      ...newCompatibilities,
-      ...existentCompatibilities,
-    ];
-
-    const pet = await this.petsRepository.create({
-      headquarter,
-      pet: petData.pet,
-      compatibilities: finalCompatibilities.map(compatibility => ({
-        compatibility_id: compatibility.id,
-        name: compatibility.name,
-      })),
+  it('should be able to update a Pet', async () => {
+    const user_id = 'user-uuid';
+    const headquarter = await createHeadquarter.execute({
+      user_id,
+      name: 'Casa',
+      identification: '82627353000180',
+      zipcode: '12215030',
+      address: 'Rua Capitão Raul Fagundes',
+      number: '573',
+      neighborhood: 'Monte Castelo',
+      city: 'São José dos Campos',
+      state: 'SP',
+      whatsapp: '12981005727',
+      about: 'Ong para cuidar de gatões',
+      latitude: -23.1849779,
+      longitude: -45.8755274,
     });
 
-    return pet;
-  }
-}
+    const newPet = await createPet.execute(
+      {
+        hq_id: headquarter.id,
+        pet: {
+          avatar: 'avatar_url',
+          name: 'Gatíneo',
+          type: 'cat',
+          breed: 'Angorá',
+          size: 'M',
+          age: 1,
+          gender: 'male',
+          description: 'Sleep a lot',
+          energy: 'low',
+          active: true,
+          expires_at: new Date(2020, 7, 25),
+        },
+        compatibilities: [
+          {
+            name: 'idosos',
+          },
+        ],
+      },
+      user_id,
+    );
 
-export default CreatePetService;
+    const updatedPet = await updatePet.execute(
+      {
+        hq_id: headquarter.id,
+        pet: {
+          avatar: 'avatar_url',
+          name: 'Gatíneo Fofíneo',
+          type: 'cat',
+          breed: 'Angorá',
+          size: 'M',
+          age: 2,
+          gender: 'male',
+          description: 'Sleep a lot',
+          energy: 'average',
+          active: true,
+          expires_at: new Date(2020, 7, 25),
+        },
+        compatibilities: [
+          {
+            name: 'gatos',
+          },
+        ],
+      },
+      newPet.id,
+      user_id,
+    );
+
+    await updatePet.execute(
+      {
+        hq_id: headquarter.id,
+        pet: {
+          avatar: 'avatar_url',
+          name: 'Gatíneo Fofíneo',
+          type: 'cat',
+          breed: 'Angorá',
+          size: 'M',
+          age: 2,
+          gender: 'male',
+          description: 'Sleep a lot',
+          energy: 'average',
+          active: true,
+          expires_at: new Date(2020, 7, 25),
+        },
+        compatibilities: [
+          {
+            name: 'gatos',
+          },
+          {
+            name: 'idosos',
+          },
+        ],
+      },
+      newPet.id,
+      user_id,
+    );
+
+    expect(updatedPet.name).toBe('Gatíneo Fofíneo');
+    expect(updatedPet.age).toBe(2);
+    expect(updatedPet.energy).toBe('average');
+  });
+
+  it('should not be able to update a non-existent Pet', async () => {
+    const user_id = 'user-uuid';
+    const headquarter = await createHeadquarter.execute({
+      user_id,
+      name: 'Casa',
+      identification: '82627353000180',
+      zipcode: '12215030',
+      address: 'Rua Capitão Raul Fagundes',
+      number: '573',
+      neighborhood: 'Monte Castelo',
+      city: 'São José dos Campos',
+      state: 'SP',
+      whatsapp: '12981005727',
+      about: 'Ong para cuidar de gatões',
+      latitude: -23.1849779,
+      longitude: -45.8755274,
+    });
+
+    await createPet.execute(
+      {
+        hq_id: headquarter.id,
+        pet: {
+          avatar: 'avatar_url',
+          name: 'Gatíneo',
+          type: 'cat',
+          breed: 'Angorá',
+          size: 'M',
+          age: 1,
+          gender: 'male',
+          description: 'Sleep a lot',
+          energy: 'low',
+          active: true,
+          expires_at: new Date(2020, 7, 25),
+        },
+        compatibilities: [
+          {
+            name: 'idosos',
+          },
+        ],
+      },
+      user_id,
+    );
+
+    await expect(
+      updatePet.execute(
+        {
+          hq_id: headquarter.id,
+          pet: {
+            avatar: 'avatar_url',
+            name: 'Gatíneo Fofíneo',
+            type: 'cat',
+            breed: 'Angorá',
+            size: 'M',
+            age: 2,
+            gender: 'male',
+            description: 'Sleep a lot',
+            energy: 'average',
+            active: true,
+            expires_at: new Date(2020, 7, 25),
+          },
+          compatibilities: [
+            {
+              name: 'idosos',
+            },
+            {
+              name: 'gatos',
+            },
+          ],
+        },
+        'non-existent-id',
+        user_id,
+      ),
+    ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to update a Pet in a non exitent Headquarter', async () => {
+    const user_id = 'user-uuid';
+    const headquarter = await createHeadquarter.execute({
+      user_id,
+      name: 'Casa',
+      identification: '82627353000180',
+      zipcode: '12215030',
+      address: 'Rua Capitão Raul Fagundes',
+      number: '573',
+      neighborhood: 'Monte Castelo',
+      city: 'São José dos Campos',
+      state: 'SP',
+      whatsapp: '12981005727',
+      about: 'Ong para cuidar de gatões',
+      latitude: -23.1849779,
+      longitude: -45.8755274,
+    });
+
+    const newPet = await createPet.execute(
+      {
+        hq_id: headquarter.id,
+        pet: {
+          avatar: 'avatar_url',
+          name: 'Gatíneo',
+          type: 'cat',
+          breed: 'Angorá',
+          size: 'M',
+          age: 1,
+          gender: 'male',
+          description: 'Sleep a lot',
+          energy: 'low',
+          active: true,
+          expires_at: new Date(2020, 7, 25),
+        },
+        compatibilities: [
+          {
+            name: 'idosos',
+          },
+        ],
+      },
+      user_id,
+    );
+
+    await expect(
+      updatePet.execute(
+        {
+          hq_id: 'non-existent-hq-id',
+          pet: {
+            avatar: 'avatar_url',
+            name: 'Gatíneo Fofíneo',
+            type: 'cat',
+            breed: 'Angorá',
+            size: 'M',
+            age: 2,
+            gender: 'male',
+            description: 'Sleep a lot',
+            energy: 'average',
+            active: true,
+            expires_at: new Date(2020, 7, 25),
+          },
+          compatibilities: [
+            {
+              name: 'idosos',
+            },
+            {
+              name: 'gatos',
+            },
+          ],
+        },
+        newPet.id,
+        user_id,
+      ),
+    ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to update a Pet from another user', async () => {
+    const user_id = 'user-uuid';
+    const headquarter = await createHeadquarter.execute({
+      user_id,
+      name: 'Casa',
+      identification: '82627353000180',
+      zipcode: '12215030',
+      address: 'Rua Capitão Raul Fagundes',
+      number: '573',
+      neighborhood: 'Monte Castelo',
+      city: 'São José dos Campos',
+      state: 'SP',
+      whatsapp: '12981005727',
+      about: 'Ong para cuidar de gatões',
+      latitude: -23.1849779,
+      longitude: -45.8755274,
+    });
+
+    const newPet = await createPet.execute(
+      {
+        hq_id: headquarter.id,
+        pet: {
+          avatar: 'avatar_url',
+          name: 'Gatíneo',
+          type: 'cat',
+          breed: 'Angorá',
+          size: 'M',
+          age: 1,
+          gender: 'male',
+          description: 'Sleep a lot',
+          energy: 'low',
+          active: true,
+          expires_at: new Date(2020, 7, 25),
+        },
+        compatibilities: [
+          {
+            name: 'idosos',
+          },
+        ],
+      },
+      user_id,
+    );
+
+    await expect(
+      updatePet.execute(
+        {
+          hq_id: headquarter.id,
+          pet: {
+            avatar: 'avatar_url',
+            name: 'Gatíneo Fofíneo',
+            type: 'cat',
+            breed: 'Angorá',
+            size: 'M',
+            age: 2,
+            gender: 'male',
+            description: 'Sleep a lot',
+            energy: 'average',
+            active: true,
+            expires_at: new Date(2020, 7, 25),
+          },
+          compatibilities: [
+            {
+              name: 'idosos',
+            },
+            {
+              name: 'gatos',
+            },
+          ],
+        },
+        newPet.id,
+        'wrong-user-id',
+      ),
+    ).rejects.toBeInstanceOf(AppError);
+  });
+});

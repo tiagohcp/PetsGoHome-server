@@ -36,8 +36,9 @@ describe('CreatePet', () => {
   });
 
   it('should be able to create a new Pet', async () => {
+    const user_id = 'user-uuid';
     const headquarter = await createHeadquarter.execute({
-      user_id: 'user-uuid',
+      user_id,
       name: 'Casa',
       identification: '82627353000180',
       zipcode: '12215030',
@@ -52,60 +53,9 @@ describe('CreatePet', () => {
       longitude: -45.8755274,
     });
 
-    const newPet = await createPet.execute({
-      hq_id: headquarter.id,
-      pet: {
-        avatar: 'avatar_url',
-        name: 'Gatíneo',
-        type: 'cat',
-        breed: 'Angorá',
-        size: 'M',
-        age: 1,
-        gender: 'male',
-        description: 'Sleep a lot',
-        energy: 'low',
-        active: true,
-        expires_at: new Date(2020, 7, 25),
-      },
-      compatibilities: [
-        {
-          name: 'idosos',
-        },
-      ],
-    });
-
-    await createPet.execute({
-      hq_id: headquarter.id,
-      pet: {
-        avatar: 'avatar_url',
-        name: 'Gatíneo',
-        type: 'cat',
-        breed: 'Angorá',
-        size: 'M',
-        age: 1,
-        gender: 'male',
-        description: 'Sleep a lot',
-        energy: 'low',
-        active: true,
-        expires_at: new Date(2020, 7, 25),
-      },
-      compatibilities: [
-        {
-          name: 'idosos',
-        },
-        {
-          name: 'gatos',
-        },
-      ],
-    });
-
-    expect(newPet).toHaveProperty('id');
-  });
-
-  it('should not be able to create a new Pet in a non existent headquarter', async () => {
-    await expect(
-      createPet.execute({
-        hq_id: 'hq_id',
+    const newPet = await createPet.execute(
+      {
+        hq_id: headquarter.id,
         pet: {
           avatar: 'avatar_url',
           name: 'Gatíneo',
@@ -124,7 +74,115 @@ describe('CreatePet', () => {
             name: 'idosos',
           },
         ],
-      }),
+      },
+      user_id,
+    );
+
+    await createPet.execute(
+      {
+        hq_id: headquarter.id,
+        pet: {
+          avatar: 'avatar_url',
+          name: 'Gatíneo',
+          type: 'cat',
+          breed: 'Angorá',
+          size: 'M',
+          age: 1,
+          gender: 'male',
+          description: 'Sleep a lot',
+          energy: 'low',
+          active: true,
+          expires_at: new Date(2020, 7, 25),
+        },
+        compatibilities: [
+          {
+            name: 'idosos',
+          },
+          {
+            name: 'gatos',
+          },
+        ],
+      },
+      user_id,
+    );
+
+    expect(newPet).toHaveProperty('id');
+  });
+
+  it('should not be able to create a new Pet in a headquarter from another user', async () => {
+    const headquarter = await createHeadquarter.execute({
+      user_id: 'user-uuid',
+      name: 'Casa',
+      identification: '82627353000180',
+      zipcode: '12215030',
+      address: 'Rua Capitão Raul Fagundes',
+      number: '573',
+      neighborhood: 'Monte Castelo',
+      city: 'São José dos Campos',
+      state: 'SP',
+      whatsapp: '12981005727',
+      about: 'Ong para cuidar de gatões',
+      latitude: -23.1849779,
+      longitude: -45.8755274,
+    });
+
+    await expect(
+      createPet.execute(
+        {
+          hq_id: headquarter.id,
+          pet: {
+            avatar: 'avatar_url',
+            name: 'Gatíneo',
+            type: 'cat',
+            breed: 'Angorá',
+            size: 'M',
+            age: 1,
+            gender: 'male',
+            description: 'Sleep a lot',
+            energy: 'low',
+            active: true,
+            expires_at: new Date(2020, 7, 25),
+          },
+          compatibilities: [
+            {
+              name: 'idosos',
+            },
+            {
+              name: 'gatos',
+            },
+          ],
+        },
+        'another_uuid',
+      ),
+    ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to create a new Pet in a non existent headquarter', async () => {
+    await expect(
+      createPet.execute(
+        {
+          hq_id: 'hq_id',
+          pet: {
+            avatar: 'avatar_url',
+            name: 'Gatíneo',
+            type: 'cat',
+            breed: 'Angorá',
+            size: 'M',
+            age: 1,
+            gender: 'male',
+            description: 'Sleep a lot',
+            energy: 'low',
+            active: true,
+            expires_at: new Date(2020, 7, 25),
+          },
+          compatibilities: [
+            {
+              name: 'idosos',
+            },
+          ],
+        },
+        'user-uuid',
+      ),
     ).rejects.toBeInstanceOf(AppError);
   });
 });

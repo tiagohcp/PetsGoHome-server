@@ -40,13 +40,17 @@ class CreatePetService {
     private headquartersRepository: IHeadquartersRepository,
   ) {}
 
-  public async execute(petData: IRequest): Promise<Pet> {
+  public async execute(petData: IRequest, user_id: string): Promise<Pet> {
     const headquarter = await this.headquartersRepository.findById(
       petData.hq_id,
     );
 
     if (headquarter === undefined) {
       throw new AppError('Headquarter is not cadastred.');
+    }
+
+    if (headquarter.user_id !== user_id) {
+      throw new AppError('Only can create a pet in your own headquarter.');
     }
 
     let existentCompatibilities = await this.compatibilitiesRepository.findByName(

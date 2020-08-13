@@ -19,6 +19,7 @@ class ListOwnedPetsService {
   public async execute({ hq_id }: IRequest): Promise<Pet[]> {
     console.log('***ListAllPetsService.execute.hq_id ', hq_id);
     const headquarter = await this.headquartersRepository.findById(hq_id);
+    console.log('***ListAllPetsService.execute.headquarter ', headquarter);
 
     if (headquarter) {
       return headquarter.pets;

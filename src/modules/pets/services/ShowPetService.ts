@@ -21,7 +21,7 @@ class ShowPetsService {
       return pet;
     }
 
-    throw new AppError('Id informado não cadastrado.');
+    throw new AppError('This pet is not existent.');
   }
 }
 

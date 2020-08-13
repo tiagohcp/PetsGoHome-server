@@ -23,7 +23,13 @@ class FakePetsRepository implements IPetsRepository {
   public async create(petData: ICreatePetDTO): Promise<Pet> {
     const pet = new Pet();
 
-    Object.assign(pet, { id: uuid() }, petData);
+    Object.assign(
+      pet,
+      { id: uuid() },
+      { headquarter: petData.headquarter },
+      { pet_compatibilities: petData.compatibilities },
+      petData.pet,
+    );
 
     this.pets.push(pet);
 

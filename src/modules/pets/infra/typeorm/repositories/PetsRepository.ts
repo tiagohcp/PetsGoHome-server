@@ -27,7 +27,6 @@ class PetsRepository implements IPetsRepository {
   }
 
   public async create(petData: ICreatePetDTO): Promise<Pet> {
-    console.log('***PetsRepository.create.petData ', petData);
     const pet = this.ormRepository.create({
       headquarter: petData.headquarter,
       avatar: petData.pet.avatar,
@@ -43,8 +42,6 @@ class PetsRepository implements IPetsRepository {
       expires_at: petData.pet.expires_at,
       pet_compatibilities: petData.compatibilities,
     });
-
-    console.log('***PetsRepository.create.pet ', pet);
 
     await this.ormRepository.save(pet);
 
