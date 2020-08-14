@@ -28,13 +28,15 @@ class FakeCompatibilitiesRepository implements ICompatibilitiesRepository {
     names: ICreateCompatibilityDTO[],
   ): Promise<Compatibility[]> {
     const addCompatibilities: Compatibility[] = [];
-    names.forEach(name => {
+    names.map(name => {
       const compatibility = new Compatibility();
 
       Object.assign(compatibility, { id: uuid() }, name);
 
       this.compatibilities.push(compatibility);
       addCompatibilities.push(compatibility);
+
+      return true;
     });
 
     return addCompatibilities;
@@ -44,13 +46,15 @@ class FakeCompatibilitiesRepository implements ICompatibilitiesRepository {
     compatibilities: Compatibility[],
   ): Promise<Compatibility[]> {
     const updatedCompatibilities: Compatibility[] = [];
-    compatibilities.forEach(compatibility => {
+    compatibilities.map(compatibility => {
       const findIndex = this.compatibilities.findIndex(
         findCompatibility => findCompatibility.id === compatibility.id,
       );
 
       this.compatibilities[findIndex] = compatibility;
       updatedCompatibilities.push(compatibility);
+
+      return true;
     });
 
     return updatedCompatibilities;

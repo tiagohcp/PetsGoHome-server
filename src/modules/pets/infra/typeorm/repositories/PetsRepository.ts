@@ -26,10 +26,20 @@ class PetsRepository implements IPetsRepository {
     return pets;
   }
 
+  public async findByHeadquarter(hq_id: string): Promise<Pet[] | undefined> {
+    const pets = await this.ormRepository.find({
+      where: {
+        hq_id,
+      },
+    });
+
+    return pets;
+  }
+
   public async create(petData: ICreatePetDTO): Promise<Pet> {
     const pet = this.ormRepository.create({
       headquarter: petData.headquarter,
-      avatar: petData.pet.avatar,
+      hq_id: petData.headquarter.id,
       name: petData.pet.name,
       type: petData.pet.type,
       breed: petData.pet.breed,

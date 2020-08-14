@@ -10,9 +10,8 @@ import Pet from '../infra/typeorm/entities/Pet';
 import Compatibility from '../infra/typeorm/entities/Compatibility';
 
 interface IRequest {
-  hq_id: string;
   pet: {
-    avatar: string;
+    hq_id: string;
     name: string;
     type: 'dog' | 'cat';
     breed: string;
@@ -42,7 +41,7 @@ class CreatePetService {
 
   public async execute(petData: IRequest, user_id: string): Promise<Pet> {
     const headquarter = await this.headquartersRepository.findById(
-      petData.hq_id,
+      petData.pet.hq_id,
     );
 
     if (headquarter === undefined) {

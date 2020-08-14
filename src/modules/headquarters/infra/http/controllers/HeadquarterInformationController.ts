@@ -7,10 +7,6 @@ import UpdateHeadquarterService from '@modules/headquarters/services/UpdateHeadq
 
 export default class HeadquarterInformationController {
   public async show(request: Request, response: Response): Promise<Response> {
-    console.log(
-      '***HeadquarterInformationController.index.request.params ',
-      request.params,
-    );
     const { headquarter_id } = request.params;
 
     const showHeadquarter = container.resolve(ShowHeadquarterService);
@@ -21,13 +17,7 @@ export default class HeadquarterInformationController {
   }
 
   public async index(request: Request, response: Response): Promise<Response> {
-    console.log(
-      '***HeadquarterInformationController.index.request.user ',
-      request.user,
-    );
     const { id } = request.user;
-
-    console.log('***HeadquarterInformationController.index.id ', id);
 
     const listAllHeadquarters = container.resolve(ListAllHeadquartersService);
 

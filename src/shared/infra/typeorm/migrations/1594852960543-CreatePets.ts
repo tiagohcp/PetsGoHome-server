@@ -24,10 +24,6 @@ export default class CreatePets1594852960543 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'avatar',
-            type: 'varchar',
-          },
-          {
             name: 'name',
             type: 'varchar',
           },

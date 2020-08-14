@@ -63,9 +63,8 @@ describe('UpdatePet', () => {
 
     const newPet = await createPet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -88,9 +87,8 @@ describe('UpdatePet', () => {
 
     const updatedPet = await updatePet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo Fofíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -114,9 +112,8 @@ describe('UpdatePet', () => {
 
     await updatePet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo Fofíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -166,9 +163,8 @@ describe('UpdatePet', () => {
 
     await createPet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -192,9 +188,9 @@ describe('UpdatePet', () => {
     await expect(
       updatePet.execute(
         {
-          hq_id: headquarter.id,
           pet: {
-            avatar: 'avatar_url',
+            hq_id: headquarter.id,
+
             name: 'Gatíneo Fofíneo',
             type: 'cat',
             breed: 'Angorá',
@@ -241,9 +237,8 @@ describe('UpdatePet', () => {
 
     const newPet = await createPet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -267,9 +262,9 @@ describe('UpdatePet', () => {
     await expect(
       updatePet.execute(
         {
-          hq_id: 'non-existent-hq-id',
           pet: {
-            avatar: 'avatar_url',
+            hq_id: 'non-existent-hq-id',
+
             name: 'Gatíneo Fofíneo',
             type: 'cat',
             breed: 'Angorá',
@@ -316,9 +311,8 @@ describe('UpdatePet', () => {
 
     const newPet = await createPet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -342,9 +336,9 @@ describe('UpdatePet', () => {
     await expect(
       updatePet.execute(
         {
-          hq_id: headquarter.id,
           pet: {
-            avatar: 'avatar_url',
+            hq_id: headquarter.id,
+
             name: 'Gatíneo Fofíneo',
             type: 'cat',
             breed: 'Angorá',

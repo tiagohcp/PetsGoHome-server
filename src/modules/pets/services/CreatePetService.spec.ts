@@ -55,9 +55,8 @@ describe('CreatePet', () => {
 
     const newPet = await createPet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -80,9 +79,8 @@ describe('CreatePet', () => {
 
     await createPet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -129,9 +127,8 @@ describe('CreatePet', () => {
     await expect(
       createPet.execute(
         {
-          hq_id: headquarter.id,
           pet: {
-            avatar: 'avatar_url',
+            hq_id: headquarter.id,
             name: 'Gatíneo',
             type: 'cat',
             breed: 'Angorá',
@@ -161,9 +158,8 @@ describe('CreatePet', () => {
     await expect(
       createPet.execute(
         {
-          hq_id: 'hq_id',
           pet: {
-            avatar: 'avatar_url',
+            hq_id: 'hq_id',
             name: 'Gatíneo',
             type: 'cat',
             breed: 'Angorá',

@@ -4,10 +4,6 @@ import AppError from '@shared/errors/AppError';
 import IPetsRepository from '../repositories/IPetsRepository';
 import Pet from '../infra/typeorm/entities/Pet';
 
-interface IRequest {
-  hq_id: string;
-}
-
 @injectable()
 class ShowPetsService {
   constructor(

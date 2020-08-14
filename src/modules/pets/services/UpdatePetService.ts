@@ -11,9 +11,8 @@ import Compatibility from '../infra/typeorm/entities/Compatibility';
 import PetsCompatibilities from '../infra/typeorm/entities/PetsCompatibilities';
 
 interface IRequest {
-  hq_id: string;
   pet: {
-    avatar: string;
+    hq_id: string;
     name: string;
     type: 'dog' | 'cat';
     breed: string;
@@ -53,7 +52,7 @@ class UpdatePetService {
     }
 
     const headquarter = await this.headquartersRepository.findById(
-      petData.hq_id,
+      petData.pet.hq_id,
     );
 
     if (headquarter === undefined) {
@@ -95,7 +94,7 @@ class UpdatePetService {
     ];
 
     pet.headquarter = headquarter;
-    pet.avatar = petData.pet.avatar;
+    pet.hq_id = petData.pet.hq_id;
     pet.name = petData.pet.name;
     pet.type = petData.pet.type;
     pet.breed = petData.pet.breed;

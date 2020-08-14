@@ -6,7 +6,7 @@ interface ICompatibility {
 }
 
 interface IPet {
-  avatar: string;
+  hq_id: string;
   name: string;
   type: 'dog' | 'cat';
   breed: string;

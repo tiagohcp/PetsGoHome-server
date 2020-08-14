@@ -59,9 +59,8 @@ describe('ShowPet', () => {
 
     const newPet = await createPet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo',
           type: 'cat',
           breed: 'Angorá',
@@ -109,9 +108,8 @@ describe('ShowPet', () => {
 
     await createPet.execute(
       {
-        hq_id: headquarter.id,
         pet: {
-          avatar: 'avatar_url',
+          hq_id: headquarter.id,
           name: 'Gatíneo',
           type: 'cat',
           breed: 'Angorá',

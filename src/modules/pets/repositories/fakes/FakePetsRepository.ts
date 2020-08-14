@@ -20,6 +20,12 @@ class FakePetsRepository implements IPetsRepository {
     return findPets;
   }
 
+  public async findByHeadquarter(hq_id: string): Promise<Pet[] | undefined> {
+    const findPet = this.pets.filter(pet => pet.headquarter.id === hq_id);
+
+    return findPet;
+  }
+
   public async create(petData: ICreatePetDTO): Promise<Pet> {
     const pet = new Pet();
 

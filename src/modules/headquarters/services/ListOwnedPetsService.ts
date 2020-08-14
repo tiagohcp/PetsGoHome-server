@@ -2,31 +2,29 @@ import { injectable, inject } from 'tsyringe';
 
 import Pet from '@modules/pets/infra/typeorm/entities/Pet';
 import AppError from '@shared/errors/AppError';
-import IHeadquartersRepository from '../repositories/IHeadquartersRepository';
-// import Headquarter from '../infra/typeorm/entities/Headquarter';
+import IPetsRepository from '@modules/pets/repositories/IPetsRepository';
+// import Pet from '../infra/typeorm/entities/Pet';
 
 interface IRequest {
   hq_id: string;
 }
 
 @injectable()
-class ListOwnedPetsService {
+class ListHeadquarterOwnedPetsService {
   constructor(
-    @inject('HeadquartersRepository')
-    private headquartersRepository: IHeadquartersRepository,
+    @inject('PetsRepository')
+    private petsRepository: IPetsRepository,
   ) {}
 
   public async execute({ hq_id }: IRequest): Promise<Pet[]> {
-    console.log('***ListAllPetsService.execute.hq_id ', hq_id);
-    const headquarter = await this.headquartersRepository.findById(hq_id);
-    console.log('***ListAllPetsService.execute.headquarter ', headquarter);
+    const pets = await this.petsRepository.findByHeadquarter(hq_id);
 
-    if (headquarter) {
-      return headquarter.pets;
+    if (pets && pets.length > 0) {
+      return pets;
     }
 
-    throw new AppError('Headquarter is not cadastred.');
+    throw new AppError('Headquarter has not a pet cadastred.');
   }
 }
 
-export default ListOwnedPetsService;
+export default ListHeadquarterOwnedPetsService;

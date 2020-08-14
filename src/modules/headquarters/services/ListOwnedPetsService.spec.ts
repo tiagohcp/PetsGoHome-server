@@ -13,7 +13,7 @@ describe('ListOwnedPets', () => {
   beforeEach(() => {
     fakeHeadquartersRepository = new FakeHeadquartersRepository();
     fakePetsRepository = new FakePetsRepository();
-    listOwnedPets = new ListOwnedPetsService(fakeHeadquartersRepository);
+    listOwnedPets = new ListOwnedPetsService(fakePetsRepository);
   });
 
   it('should be able to show all pets from a Headquarter', async () => {
@@ -36,7 +36,8 @@ describe('ListOwnedPets', () => {
     const newPet = await fakePetsRepository.create({
       headquarter: createdHeadquarter,
       pet: {
-        avatar: 'avatar_url',
+        hq_id: createdHeadquarter.id,
+
         name: 'Gatíneo',
         type: 'cat',
         breed: 'Angorá',
@@ -56,15 +57,35 @@ describe('ListOwnedPets', () => {
       ],
     });
 
-    console.log('***ListOwnedPets.newPet ', newPet);
+    const newPet2 = await fakePetsRepository.create({
+      headquarter: createdHeadquarter,
+      pet: {
+        hq_id: createdHeadquarter.id,
 
-    const headquarter = await listOwnedPets.execute({
+        name: 'Gatíneo',
+        type: 'cat',
+        breed: 'Angorá',
+        size: 'M',
+        age: 1,
+        gender: 'male',
+        description: 'Sleep a lot',
+        energy: 'low',
+        active: true,
+        expires_at: new Date(2020, 7, 25),
+      },
+      compatibilities: [
+        {
+          compatibility_id: 'compa_id',
+          name: 'idosos',
+        },
+      ],
+    });
+
+    const pets = await listOwnedPets.execute({
       hq_id: createdHeadquarter.id,
     });
 
-    console.log('***ListOwnedPets.headquarter ', headquarter);
-
-    expect(headquarter).toContain([newPet]);
+    expect(pets).toEqual([newPet, newPet2]);
   });
 
   it('should not be able to show the information from non-existing HeadQuarter', async () => {

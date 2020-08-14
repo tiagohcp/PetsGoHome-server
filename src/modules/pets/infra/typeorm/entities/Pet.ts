@@ -11,6 +11,7 @@ import {
 
 import Headquarter from '@modules/headquarters/infra/typeorm/entities/Headquarter';
 import Visit from '@modules/visits/infra/typeorm/entities/Visit';
+import PetAvatar from '@modules/pets/infra/typeorm/entities/PetAvatar';
 import PetsCompatibilities from '@modules/pets/infra/typeorm/entities/PetsCompatibilities';
 
 @Entity('pets')
@@ -22,8 +23,14 @@ class Pet {
   @JoinColumn({ name: 'hq_id' })
   headquarter: Headquarter;
 
+  @Column()
+  hq_id: string;
+
   @OneToMany(() => Visit, visit => visit.pet)
   visits: Visit[];
+
+  @OneToMany(() => PetAvatar, petAvatar => petAvatar.pet)
+  petAvatars: PetAvatar[];
 
   @OneToMany(
     () => PetsCompatibilities,
@@ -34,9 +41,6 @@ class Pet {
     },
   )
   pet_compatibilities: PetsCompatibilities[];
-
-  @Column()
-  avatar: string;
 
   @Column()
   name: string;
