@@ -1,4 +1,4 @@
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, In } from 'typeorm';
 
 import IPetAvatarsRepository from '@modules/pets/repositories/IPetAvatarsRepository';
 import ICreatePetAvatarDTO from '@modules/pets/dtos/ICreatePetAvatarDTO';
@@ -15,6 +15,20 @@ class PetAvatarsRepository implements IPetAvatarsRepository {
   public async findByPetId(pet_id: string): Promise<PetAvatar[] | undefined> {
     const petAvatars = this.ormRepository.find({
       where: { pet_id },
+    });
+
+    return petAvatars;
+  }
+
+  public async findByAvatar(
+    avatars: ICreatePetAvatarDTO[],
+  ): Promise<PetAvatar[] | undefined> {
+    const avatarsNames = avatars.map(avatarName => String(avatarName.avatar));
+
+    const petAvatars = await this.ormRepository.find({
+      where: {
+        avatar: In(avatarsNames),
+      },
     });
 
     return petAvatars;
@@ -37,6 +51,8 @@ class PetAvatarsRepository implements IPetAvatarsRepository {
 
       return true;
     });
+
+    await this.ormRepository.save(newPetAvatars);
 
     return newPetAvatars;
   }

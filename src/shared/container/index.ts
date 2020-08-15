@@ -17,6 +17,9 @@ import PetsRepository from '@modules/pets/infra/typeorm/repositories/PetsReposit
 import ICompatibilitiesRepository from '@modules/pets/repositories/ICompatibilitiesRepository';
 import CompatibilitiesRepository from '@modules/pets/infra/typeorm/repositories/CompatibilitiesRepository';
 
+import IPetAvatarsRepository from '@modules/pets/repositories/IPetAvatarsRepository';
+import PetAvatarsRepository from '@modules/pets/infra/typeorm/repositories/PetAvatarsRepository';
+
 container.registerSingleton<IUsersRepository>(
   'UsersRepository',
   UsersRepository,
@@ -37,4 +40,9 @@ container.registerSingleton<IPetsRepository>('PetsRepository', PetsRepository);
 container.registerSingleton<ICompatibilitiesRepository>(
   'CompatibilitiesRepository',
   CompatibilitiesRepository,
+);
+
+container.registerSingleton<IPetAvatarsRepository>(
+  'PetAvatarsRepository',
+  PetAvatarsRepository,
 );

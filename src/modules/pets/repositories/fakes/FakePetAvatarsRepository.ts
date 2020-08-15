@@ -16,6 +16,22 @@ class FakePetAvatarsRepository implements IPetAvatarsRepository {
     return findAvatars;
   }
 
+  public async findByAvatar(
+    avatars: ICreatePetAvatarDTO[],
+  ): Promise<PetAvatar[] | undefined> {
+    const avatarsNames = avatars.map(avatar => avatar.avatar);
+
+    const findAvatars = this.petAvatars.filter(petAvatar =>
+      avatarsNames.includes(petAvatar.avatar),
+    );
+
+    if (findAvatars.length < 1) {
+      return undefined;
+    }
+
+    return findAvatars;
+  }
+
   public async create(
     petAvatars: ICreatePetAvatarDTO[],
     pet_id: string,
