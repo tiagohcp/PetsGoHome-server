@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 
 import CreatePetAvatarService from '@modules/pets/services/CreatePetAvatarService';
 import ShowPetAvatarService from '@modules/pets/services/ShowPetAvatarsService';
-// import UpdatePetAvatarService from '@modules/pets/services/UpdatePetAvatarService';
+import UpdateMainPetAvatarService from '@modules/pets/services/UpdateMainPetAvatarService';
 import DeletePetAvatarService from '@modules/pets/services/DeletePetAvatarService';
 
 export default class PetController {
@@ -37,26 +37,26 @@ export default class PetController {
     return response.json(pet);
   }
 
-  // public async update(request: Request, response: Response): Promise<Response> {
-  //   const user_id = request.user.id;
+  public async update(request: Request, response: Response): Promise<Response> {
+    const user_id = request.user.id;
 
-  //   const { pet_id } = request.params;
+    const { pet_id } = request.params;
 
-  //   const { pet, compatibilities } = request.body;
+    const { hq_id, petAvatars } = request.body;
 
-  //   const updatePetAvatar = container.resolve(UpdatePetAvatarService);
+    const updateMainPetAvatar = container.resolve(UpdateMainPetAvatarService);
 
-  //   const updatedPetAvatar = await updatePetAvatar.execute(
-  //     {
-  //       pet,
-  //       compatibilities,
-  //     },
-  //     pet_id,
-  //     user_id,
-  //   );
+    const updatedPetAvatar = await updateMainPetAvatar.execute(
+      {
+        hq_id,
+        petAvatars,
+      },
+      pet_id,
+      user_id,
+    );
 
-  //   return response.json(updatedPetAvatar);
-  // }
+    return response.json(updatedPetAvatar);
+  }
 
   public async delete(request: Request, response: Response): Promise<Response> {
     const user_id = request.user.id;

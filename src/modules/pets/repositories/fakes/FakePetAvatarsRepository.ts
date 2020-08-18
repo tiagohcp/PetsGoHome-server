@@ -8,6 +8,18 @@ import PetAvatar from '@modules/pets/infra/typeorm/entities/PetAvatar';
 class FakePetAvatarsRepository implements IPetAvatarsRepository {
   private petAvatars: PetAvatar[] = [];
 
+  public async findByIds(ids: string[]): Promise<PetAvatar[] | undefined> {
+    const findAvatars = this.petAvatars.filter(petAvatar =>
+      ids.includes(petAvatar.id),
+    );
+
+    if (findAvatars.length < 1) {
+      return undefined;
+    }
+
+    return findAvatars;
+  }
+
   public async findByPetId(pet_id: string): Promise<PetAvatar[] | undefined> {
     const findAvatars = this.petAvatars.filter(
       petAvatar => petAvatar.pet_id === pet_id,
@@ -25,8 +37,6 @@ class FakePetAvatarsRepository implements IPetAvatarsRepository {
 
     findAvatars.splice(mainIndex, 1);
     findAvatars.splice(0, 0, mainAvatar);
-
-    console.log('afafafasf ', findAvatars);
 
     return findAvatars;
   }
