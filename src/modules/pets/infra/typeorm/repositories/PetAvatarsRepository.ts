@@ -1,4 +1,4 @@
-import { getRepository, Repository, In } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 
 import IPetAvatarsRepository from '@modules/pets/repositories/IPetAvatarsRepository';
 import ICreatePetAvatarDTO from '@modules/pets/dtos/ICreatePetAvatarDTO';
@@ -15,23 +15,24 @@ class PetAvatarsRepository implements IPetAvatarsRepository {
   public async findByPetId(pet_id: string): Promise<PetAvatar[] | undefined> {
     const petAvatars = this.ormRepository.find({
       where: { pet_id },
+      order: {
+        main: 'DESC',
+      },
     });
 
     return petAvatars;
   }
 
-  public async findByAvatar(
-    avatars: ICreatePetAvatarDTO[],
-  ): Promise<PetAvatar[] | undefined> {
-    const avatarsNames = avatars.map(avatarName => String(avatarName.avatar));
+  public async findByAvatar(avatar: string): Promise<PetAvatar | undefined> {
+    const avatarName = avatar;
 
-    const petAvatars = await this.ormRepository.find({
+    const petAvatar = await this.ormRepository.findOne({
       where: {
-        avatar: In(avatarsNames),
+        avatar: avatarName,
       },
     });
 
-    return petAvatars;
+    return petAvatar;
   }
 
   public async create(
@@ -65,7 +66,7 @@ class PetAvatarsRepository implements IPetAvatarsRepository {
     const petAvatar = this.ormRepository.findOne(id);
 
     if (petAvatar) {
-      this.ormRepository.delete(id);
+      await this.ormRepository.delete(id);
     }
   }
 }

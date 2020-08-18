@@ -13,23 +13,30 @@ class FakePetAvatarsRepository implements IPetAvatarsRepository {
       petAvatar => petAvatar.pet_id === pet_id,
     );
 
-    return findAvatars;
-  }
-
-  public async findByAvatar(
-    avatars: ICreatePetAvatarDTO[],
-  ): Promise<PetAvatar[] | undefined> {
-    const avatarsNames = avatars.map(avatar => avatar.avatar);
-
-    const findAvatars = this.petAvatars.filter(petAvatar =>
-      avatarsNames.includes(petAvatar.avatar),
-    );
-
     if (findAvatars.length < 1) {
       return undefined;
     }
 
+    const mainIndex = findAvatars.findIndex(
+      findAvatar => findAvatar.main === true,
+    );
+
+    const mainAvatar = findAvatars[mainIndex];
+
+    findAvatars.splice(mainIndex, 1);
+    findAvatars.splice(0, 0, mainAvatar);
+
+    console.log('afafafasf ', findAvatars);
+
     return findAvatars;
+  }
+
+  public async findByAvatar(avatar: string): Promise<PetAvatar | undefined> {
+    const findAvatar = this.petAvatars.find(
+      petAvatar => petAvatar.avatar === avatar,
+    );
+
+    return findAvatar;
   }
 
   public async create(

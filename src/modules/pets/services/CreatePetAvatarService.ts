@@ -4,16 +4,12 @@ import AppError from '@shared/errors/AppError';
 
 import IHeadquartersRepository from '@modules/headquarters/repositories/IHeadquartersRepository';
 import IPetAvatarsRepository from '../repositories/IPetAvatarsRepository';
+import IPetAvatar from '../dtos/ICreatePetAvatarDTO';
 import PetAvatar from '../infra/typeorm/entities/PetAvatar';
 
 interface IRequest {
   hq_id: string;
-  petAvatars: [
-    {
-      avatar: string;
-      main: boolean;
-    },
-  ];
+  petAvatars: IPetAvatar[];
 }
 
 @injectable()

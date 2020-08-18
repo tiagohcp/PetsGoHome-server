@@ -10,6 +10,10 @@ import FakeCompatibilitiesRepository from '../repositories/fakes/FakeCompatibili
 import CreatePetService from './CreatePetService';
 import CreatePetAvatarService from './CreatePetAvatarService';
 
+import ShowPetAvatarsService from './ShowPetAvatarsService';
+
+let showPetAvatars: ShowPetAvatarsService;
+
 let fakePetAvatarsRepository: FakePetAvatarsRepository;
 let createPetAvatar: CreatePetAvatarService;
 
@@ -38,6 +42,8 @@ describe('CreatePet', () => {
       fakeHeadquartersRepository,
     );
 
+    showPetAvatars = new ShowPetAvatarsService(fakePetAvatarsRepository);
+
     fakeIdentificatorValidator = new FakeIdentificatorValidator();
 
     createHeadquarter = new CreateHeadquarterService(
@@ -46,7 +52,75 @@ describe('CreatePet', () => {
     );
   });
 
-  it('should be able to create a new petAvatar', async () => {
+  it('should be able to show the petAvatars', async () => {
+    const user_id = 'user-uuid';
+    const headquarter = await createHeadquarter.execute({
+      user_id,
+      name: 'Casa',
+      identification: '82627353000180',
+      zipcode: '12215030',
+      address: 'Rua Capitão Raul Fagundes',
+      number: '573',
+      neighborhood: 'Monte Castelo',
+      city: 'São José dos Campos',
+      state: 'SP',
+      whatsapp: '12981005727',
+      about: 'Ong para cuidar de gatões',
+      latitude: -23.1849779,
+      longitude: -45.8755274,
+    });
+
+    const newPet = await createPet.execute(
+      {
+        pet: {
+          hq_id: headquarter.id,
+          name: 'Gatíneo',
+          type: 'cat',
+          breed: 'Angorá',
+          size: 'M',
+          age: 1,
+          gender: 'male',
+          description: 'Sleep a lot',
+          energy: 'low',
+          active: true,
+          expires_at: new Date(2020, 7, 25),
+        },
+        compatibilities: [
+          {
+            name: 'idosos',
+          },
+        ],
+      },
+      user_id,
+    );
+
+    await createPetAvatar.execute(
+      {
+        hq_id: headquarter.id,
+        petAvatars: [
+          {
+            avatar: 'avatar-url-1',
+            main: false,
+          },
+          {
+            avatar: 'avatar-url-2',
+            main: true,
+          },
+        ],
+      },
+      newPet.id,
+      user_id,
+    );
+
+    const existentPetAvatars = await showPetAvatars.execute(newPet.id);
+
+    expect(existentPetAvatars[0].avatar).toBe('avatar-url-2');
+    expect(existentPetAvatars[0].main).toBe(true);
+    expect(existentPetAvatars[1].avatar).toBe('avatar-url-1');
+    expect(existentPetAvatars[1].main).toBe(false);
+  });
+
+  it('should not be able to show a petAvatar from a pet whitout Avatar', async () => {
     const user_id = 'user-uuid';
     const headquarter = await createHeadquarter.execute({
       user_id,
@@ -106,214 +180,8 @@ describe('CreatePet', () => {
       user_id,
     );
 
-    const newPetAvatars2 = await createPetAvatar.execute(
-      {
-        hq_id: headquarter.id,
-        petAvatars: [
-          {
-            avatar: 'avatar-url-1',
-            main: true,
-          },
-          {
-            avatar: 'avatar-url-3',
-            main: false,
-          },
-        ],
-      },
-      newPet.id,
-      user_id,
-    );
-
-    expect(newPetAvatars2[0]).toHaveProperty('id');
-    expect(newPetAvatars2[1]).toHaveProperty('id');
-  });
-
-  it('should not be able to create a new petAvatar in a non existent headquarter', async () => {
-    const user_id = 'user-uuid';
-    const headquarter = await createHeadquarter.execute({
-      user_id,
-      name: 'Casa',
-      identification: '82627353000180',
-      zipcode: '12215030',
-      address: 'Rua Capitão Raul Fagundes',
-      number: '573',
-      neighborhood: 'Monte Castelo',
-      city: 'São José dos Campos',
-      state: 'SP',
-      whatsapp: '12981005727',
-      about: 'Ong para cuidar de gatões',
-      latitude: -23.1849779,
-      longitude: -45.8755274,
-    });
-
-    const newPet = await createPet.execute(
-      {
-        pet: {
-          hq_id: headquarter.id,
-          name: 'Gatíneo',
-          type: 'cat',
-          breed: 'Angorá',
-          size: 'M',
-          age: 1,
-          gender: 'male',
-          description: 'Sleep a lot',
-          energy: 'low',
-          active: true,
-          expires_at: new Date(2020, 7, 25),
-        },
-        compatibilities: [
-          {
-            name: 'idosos',
-          },
-        ],
-      },
-      user_id,
-    );
-
     await expect(
-      createPetAvatar.execute(
-        {
-          hq_id: 'non-exixtent-hq_id',
-          petAvatars: [
-            {
-              avatar: 'avatar-url-1',
-              main: true,
-            },
-            {
-              avatar: 'avatar-url-2',
-              main: false,
-            },
-          ],
-        },
-        newPet.id,
-        user_id,
-      ),
-    ).rejects.toBeInstanceOf(AppError);
-  });
-
-  it('should not be able to create a new petAvatar in a pet from another user', async () => {
-    const user_id = 'user-uuid';
-    const headquarter = await createHeadquarter.execute({
-      user_id,
-      name: 'Casa',
-      identification: '82627353000180',
-      zipcode: '12215030',
-      address: 'Rua Capitão Raul Fagundes',
-      number: '573',
-      neighborhood: 'Monte Castelo',
-      city: 'São José dos Campos',
-      state: 'SP',
-      whatsapp: '12981005727',
-      about: 'Ong para cuidar de gatões',
-      latitude: -23.1849779,
-      longitude: -45.8755274,
-    });
-
-    const newPet = await createPet.execute(
-      {
-        pet: {
-          hq_id: headquarter.id,
-          name: 'Gatíneo',
-          type: 'cat',
-          breed: 'Angorá',
-          size: 'M',
-          age: 1,
-          gender: 'male',
-          description: 'Sleep a lot',
-          energy: 'low',
-          active: true,
-          expires_at: new Date(2020, 7, 25),
-        },
-        compatibilities: [
-          {
-            name: 'idosos',
-          },
-        ],
-      },
-      user_id,
-    );
-
-    await expect(
-      createPetAvatar.execute(
-        {
-          hq_id: headquarter.id,
-          petAvatars: [
-            {
-              avatar: 'avatar-url-1',
-              main: true,
-            },
-            {
-              avatar: 'avatar-url-2',
-              main: false,
-            },
-          ],
-        },
-        newPet.id,
-        'another_uuid',
-      ),
-    ).rejects.toBeInstanceOf(AppError);
-  });
-
-  it('should not be able to create a new petAvatar whitout a main avatar', async () => {
-    const user_id = 'user-uuid';
-    const headquarter = await createHeadquarter.execute({
-      user_id,
-      name: 'Casa',
-      identification: '82627353000180',
-      zipcode: '12215030',
-      address: 'Rua Capitão Raul Fagundes',
-      number: '573',
-      neighborhood: 'Monte Castelo',
-      city: 'São José dos Campos',
-      state: 'SP',
-      whatsapp: '12981005727',
-      about: 'Ong para cuidar de gatões',
-      latitude: -23.1849779,
-      longitude: -45.8755274,
-    });
-
-    const newPet = await createPet.execute(
-      {
-        pet: {
-          hq_id: headquarter.id,
-          name: 'Gatíneo',
-          type: 'cat',
-          breed: 'Angorá',
-          size: 'M',
-          age: 1,
-          gender: 'male',
-          description: 'Sleep a lot',
-          energy: 'low',
-          active: true,
-          expires_at: new Date(2020, 7, 25),
-        },
-        compatibilities: [
-          {
-            name: 'idosos',
-          },
-        ],
-      },
-      user_id,
-    );
-
-    await expect(
-      createPetAvatar.execute(
-        {
-          hq_id: headquarter.id,
-          petAvatars: [
-            {
-              avatar: 'avatar-url-1',
-              main: false,
-            },
-            {
-              avatar: 'avatar-url-2',
-              main: false,
-            },
-          ],
-        },
-        newPet.id,
-        user_id,
-      ),
+      showPetAvatars.execute('another-pet_id'),
     ).rejects.toBeInstanceOf(AppError);
   });
 });
